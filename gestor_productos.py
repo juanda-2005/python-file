@@ -72,10 +72,15 @@ def guardar_datos():
 def cargar_datos():
     try:
         with open("productos.txt", "r") as file:
+            next(file)  # Omitir la cabecera
+            next(file)  # Omitir la línea divisoria
             for line in file:
-                nombre, precio, cantidad = line.strip().split(",")
-                producto = {"nombre": nombre, "precio": int(precio), "cantidad": int(cantidad)}
-                productos.append(producto)
+                if line.strip():  # Ignorar líneas vacías
+                    nombre = line[:20].strip()
+                    precio = int(line[20:35].strip().replace(".", ""))
+                    cantidad = int(line[35:].strip())
+                    producto = {"nombre": nombre, "precio": precio, "cantidad": cantidad}
+                    productos.append(producto)
         print("Datos cargados desde productos.txt.")
     except FileNotFoundError:
         print("No se encontró productos.txt. Se iniciará con una lista de productos vacía.")
